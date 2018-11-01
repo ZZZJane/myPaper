@@ -39,7 +39,7 @@ def plot_training_stat(args):
         tr_losses.append(dict['tr_loss'])
         te_losses.append(dict['te_loss'])
         iters.append(dict['iter'])
-        
+
     # Plot
     line_tr, = plt.plot(tr_losses, c='b', label="Train")
     line_te, = plt.plot(te_losses, c='r', label="Test")
@@ -47,68 +47,70 @@ def plot_training_stat(args):
     plt.xlabel("Iterations")
     plt.ylabel("Loss")
     plt.legend([line_tr, line_te], ['Line Train', 'Line Test'])
-    #plt.legend(handles=[line_tr, line_te]) 
+    #plt.legend(handles=[line_tr, line_te])
     plt.xticks(np.arange(len(iters)), iters)
-    plt.show()
+    # plt.show()
+    out_fig_path = os.path.join(workspace, "state_figures", "%s.png" % na)
+    plt.savefig(out_fig_path)
 
 
 def calculate_pesq(args):
-    """Calculate PESQ of all enhaced speech. 
-    
+    """Calculate PESQ of all enhaced speech.
+
     Args:
-      workspace: str, path of workspace. 
-      speech_dir: str, path of clean speech. 
-      te_snr: float, testing SNR. 
+      workspace: str, path of workspace.
+      speech_dir: str, path of clean speech.
+      te_snr: float, testing SNR.
     """
     workspace = args.workspace
     speech_dir = args.speech_dir
     te_snr = args.te_snr
-    
-    # Remove already existed file. 
+
+    # Remove already existed file.
     os.system('rm _pesq_itu_results.txt')
     os.system('rm _pesq_results.txt')
-    
-    # Calculate PESQ of all enhaced speech. 
+
+    # Calculate PESQ of all enhaced speech.
     enh_speech_dir = os.path.join(workspace, "enh_wavs", "test", "%ddb" % int(te_snr))
     names = os.listdir(enh_speech_dir)
     for (cnt, na) in enumerate(names):
         print(cnt, na)
         enh_path = os.path.join(enh_speech_dir, na)
-        
+
         speech_na = na.split('.')[0]
         speech_path = os.path.join(speech_dir, "%s.wav" % speech_na)
-        
-        # Call executable PESQ tool. 
+
+        # Call executable PESQ tool.
         cmd = ' '.join(["./pesq", speech_path, enh_path, "+16000"])
-        print cmd
-        # os.system(cmd)
+        # print cmd
+        os.system(cmd)
 def calculate_pesq_noise(args):
-    """Calculate PESQ of all enhaced speech. 
-    
+    """Calculate PESQ of all enhaced speech.
+
     Args:
-      workspace: str, path of workspace. 
-      speech_dir: str, path of clean speech. 
-      te_snr: float, testing SNR. 
+      workspace: str, path of workspace.
+      speech_dir: str, path of clean speech.
+      te_snr: float, testing SNR.
     """
     workspace = args.workspace
     speech_dir = args.speech_dir
     te_snr = args.te_snr
-    
-    # Remove already existed file. 
+
+    # Remove already existed file.
     os.system('rm _pesq_itu_results.txt')
     os.system('rm _pesq_results.txt')
-    
-    # Calculate PESQ of all enhaced speech. 
+
+    # Calculate PESQ of all enhaced speech.
     enh_speech_dir = os.path.join(workspace, "enh_wavs", "test", "%ddb_n" % int(te_snr))
     names = os.listdir(enh_speech_dir)
     for (cnt, na) in enumerate(names):
         print(cnt, na)
         enh_path = os.path.join(enh_speech_dir, na)
-        
+
         speech_na = na.split('.')[1]
         speech_path = os.path.join(speech_dir, "%s.wav" % speech_na)
-        
-        # Call executable PESQ tool. 
+
+        # Call executable PESQ tool.
         cmd = ' '.join(["./pesq", speech_path, enh_path, "+16000"])
         os.system(cmd)
         

@@ -134,7 +134,7 @@ def train(args):
     #pre_model.summary()
 
     # 2.Build train model
-    n_hid = 6144
+    n_hid = 2048
     #input:feature_x
     main_input = Input(shape=(n_concat, n_freq), name='main_input')
     x = Flatten(input_shape=(n_concat, n_freq))(main_input)
@@ -212,13 +212,13 @@ def train(args):
     x = (Dense(n_hid, name='hidden_2'))(x)
     x = LeakyReLU(alpha=0.3)(x)
     x = Dropout(0.3)(x)
+    """
     x = (Dense(n_hid, activation='linear'))(x)
     #hidden3
     x = (Dense(n_hid, name='hidden_3'))(x)
     x = LeakyReLU(alpha=0.3)(x)
     x = Dropout(0.3)(x)
     #x = (Dense(n_hid, activation='linear'))(x)
-    """
     #hidden4
     x = (Dense(n_hid, name='hidden_4'))(x)
     x = LeakyReLU(alpha=0.3)(x)
@@ -284,8 +284,8 @@ def train(args):
             cPickle.dump(stat_dict, open(stat_path, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
 
         # Save model.
-        if iter % 1000 == 0:
-            model_path = os.path.join(model_dir, "md_%diters.h5" % iter)
+        if iter % 3000 == 0:
+            model_path = os.path.join(model_dir, "md_dnn2_%diters.h5" % iter)
             model.save(model_path)
             print("Saved model to %s" % model_path)
 
@@ -543,8 +543,8 @@ def inference(args):
         f.write("%s\t%s\t%s\t%s\t%s\t%s\n" % ("speech", "noise", "snr", "pred_speech","pred_noise","pred_snr"))
 
         # Debug plot.
-        # if args.visualize:
-        if cnt % 100 == 0:
+        if args.visualize:
+        # if cnt % 100 == 0:
             fig, axs = plt.subplots(3,1, sharex=False)
             axs[0].matshow(mixed_x.T, origin='lower', aspect='auto', cmap='jet')
             axs[1].matshow(speech_x.T, origin='lower', aspect='auto', cmap='jet')
